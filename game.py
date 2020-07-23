@@ -9,7 +9,7 @@ win = pygame.display.set_mode((1000, 800))
 pygame.display.set_caption("ajedrez")
 
 tam = 70
-tab_x_off = 80
+tab_x_off = 100
 tab_y_off = 80
 
 imgpath = os.getcwd() + r'\img'
@@ -69,7 +69,7 @@ while run:
                 for i in state:
                     for j in range(0, len(state[i])):
                         if(state[i][j][0] == tabx and state[i][j][1] == taby): 
-                            print(i)
+                            print(i) 
                             pieza_mov = (i, j)
                             dragdrop = False
             else:
