@@ -3,10 +3,25 @@ import os
 import sys
 import json
 
+def PossibleMovements(piece):
+    print(piece)
+    movements = []                                          #Lista para guardar casillas disponibles para visitar
+    if(piece[0][0] == "r"):                                 #Movimientos para el rey
+        for i in range(piece[1][0]-1, piece[1][0]+2):       
+            for j in range(piece[1][1]-1, piece[1][1]+2):
+                if (i, j) != piece[1]: 
+                    movements.append((i, j))
+    #elif(piece[0][0] == "d"):
+    #elif(piece[0][0] == "t"):
+    #elif(piece[0][0] == "a"):
+    #elif(piece[0][0] == "c"):
+    #elif(piece[0][0] == "p"):        
+    print(movements)
+        
 pygame.init()
 win = pygame.display.set_mode((1000, 800))
 
-pygame.display.set_caption("ajedrez")
+pygame.display.set_caption("Ajedrez")
 
 tam = 70
 tab_x_off = 100
@@ -71,6 +86,7 @@ while run:
                         if(state[i][j][0] == tabx and state[i][j][1] == taby): 
                             print(i) 
                             pieza_mov = (i, j)
+                            PossibleMovements((i, state[i][j]))
                             dragdrop = False
             else:
                 state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
@@ -92,4 +108,5 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
 
