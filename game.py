@@ -10,12 +10,24 @@ def PossibleMovements(piece):
         for i in range(piece[1][0]-1, piece[1][0]+2):       
             for j in range(piece[1][1]-1, piece[1][1]+2):
                 movements.append((i, j))
-    #elif(piece[0][0] == "d"):
+    elif(piece[0][0] == "d"):
+        for i in range(8):
+            movements.append((piece[1][0], i))
+            movements.append((i, piece[1][1]))
+            movements.append((piece[1][0]+i, piece[1][1]+i))
+            movements.append((piece[1][0]-i, piece[1][1]-i))
+            movements.append((piece[1][0]+i, piece[1][1]-i))
+            movements.append((piece[1][0]-i, piece[1][1]+i))
     elif(piece[0][0] == "t"):
         for i in range(8):
             movements.append((piece[1][0], i))
             movements.append((i, piece[1][1]))
-    #elif(piece[0][0] == "a"):        
+    elif(piece[0][0] == "a"):        
+        for i in range(8):
+            movements.append((piece[1][0]+i, piece[1][1]+i))
+            movements.append((piece[1][0]-i, piece[1][1]-i))
+            movements.append((piece[1][0]+i, piece[1][1]-i))
+            movements.append((piece[1][0]-i, piece[1][1]+i))
     elif(piece[0][0] == "c"):
         for i in range(4):
             movements.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
@@ -24,7 +36,10 @@ def PossibleMovements(piece):
         movements.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
             movements.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
-    while piece[1] in movements: movements.remove(piece[1])
+    # for i in movements:
+        # if (i == piece[1]) or (i[0] < 0) or (i[0] > 7) or (i[1] < 0) or (i[1] > 7):
+            # movements.remove(i)
+    #movements = [i for i in movements if not (i == piece[1]) or (i[0] < 0) or (i[0] > 7) or (i[1] < 0) or (i[1] > 7)]
     print(movements)
     return movements
         
