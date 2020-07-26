@@ -5,43 +5,39 @@ import json
 
 def PossibleMovements(piece):
     print(piece)
-    movements = []                                          #Lista para guardar casillas disponibles para visitar
-    if(piece[0][0] == "r"):                                 #Movimientos para el rey
+    moves = []                                              #Lista para guardar casillas disponibles para visitar
+    if(piece[0][0] == "r"):
         for i in range(piece[1][0]-1, piece[1][0]+2):       
             for j in range(piece[1][1]-1, piece[1][1]+2):
-                movements.append((i, j))
+                moves.append((i, j))
     elif(piece[0][0] == "d"):
         for i in range(8):
-            movements.append((piece[1][0], i))
-            movements.append((i, piece[1][1]))
-            movements.append((piece[1][0]+i, piece[1][1]+i))
-            movements.append((piece[1][0]-i, piece[1][1]-i))
-            movements.append((piece[1][0]+i, piece[1][1]-i))
-            movements.append((piece[1][0]-i, piece[1][1]+i))
+            moves.append((piece[1][0], i))
+            moves.append((i, piece[1][1]))
+            moves.append((piece[1][0]+i, piece[1][1]+i))
+            moves.append((piece[1][0]-i, piece[1][1]-i))
+            moves.append((piece[1][0]+i, piece[1][1]-i))
+            moves.append((piece[1][0]-i, piece[1][1]+i))
     elif(piece[0][0] == "t"):
         for i in range(8):
-            movements.append((piece[1][0], i))
-            movements.append((i, piece[1][1]))
+            moves.append((piece[1][0], i))
+            moves.append((i, piece[1][1]))
     elif(piece[0][0] == "a"):        
         for i in range(8):
-            movements.append((piece[1][0]+i, piece[1][1]+i))
-            movements.append((piece[1][0]-i, piece[1][1]-i))
-            movements.append((piece[1][0]+i, piece[1][1]-i))
-            movements.append((piece[1][0]-i, piece[1][1]+i))
+            moves.append((piece[1][0]+i, piece[1][1]+i))
+            moves.append((piece[1][0]-i, piece[1][1]-i))
+            moves.append((piece[1][0]+i, piece[1][1]-i))
+            moves.append((piece[1][0]-i, piece[1][1]+i))
     elif(piece[0][0] == "c"):
         for i in range(4):
-            movements.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
-            movements.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
+            moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
+            moves.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
     elif(piece[0][0] == "p"):   
-        movements.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
+        moves.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
-            movements.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
-    # for i in movements:
-        # if (i == piece[1]) or (i[0] < 0) or (i[0] > 7) or (i[1] < 0) or (i[1] > 7):
-            # movements.remove(i)
-    #movements = [i for i in movements if not (i == piece[1]) or (i[0] < 0) or (i[0] > 7) or (i[1] < 0) or (i[1] > 7)]
-    print(movements)
-    return movements
+            moves.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
+    moves = [i for i in moves if i != piece[1] and 0 <= i[0] <= 7 and 0 <= i[1] <= 7]
+    return moves
         
 pygame.init()
 win = pygame.display.set_mode((1000, 800))
@@ -112,8 +108,8 @@ while run:
                             pieza_mov = (i, j)
                             mov = PossibleMovements((i, state[i][j]))
                             dragdrop = False
-            else:
-                state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
+            else:                                
+                if (tabx, taby) in mov: state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
                 dragdrop = True
 
                 sendmsg = json.dumps(state)
