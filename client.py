@@ -19,13 +19,29 @@ def send(msg):
     client.send(message)
     print(client.recv(2048).decode(FORMAT))
 
-print("client")
+def read_msg(conn):
+    msg_length = conn.recv(HEADER).decode(FORMAT)
+    if msg_length:
+        msg_length = int(msg_length)
+        msg = conn.recv(msg_length)
+        return msg
 
-rec = ""
+trn = read_msg(client)
+ter = True
+
+if(trn == b'!T1'): ter = True
+else: ter = False
+
+print(trn, ter)
 
 while True:
-    msg = input()
-    send(msg)
-    rec = client.recv(HEADER).decode(FORMAT)
-    print(rec)
-    if(rec == "!GG"): break
+
+    if(ter):
+        msg = input()
+        send(msg)
+        ter = not ter
+    else: 
+        rec = read_msg(client)
+        print(rec)
+        ter = not ter
+        if(rec == "!GG"): break

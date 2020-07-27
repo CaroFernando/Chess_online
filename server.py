@@ -28,6 +28,15 @@ def handle_client(conn, addr):
 
     conn.close()
 
+def send(msg, client):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' ' * (HEADER - len(send_length))
+    client.send(send_length)
+    client.send(message)
+    print(client.recv(2048).decode(FORMAT))
+
 def read_msg(conn):
     msg_length = conn.recv(HEADER).decode(FORMAT)
     if msg_length:
@@ -36,30 +45,34 @@ def read_msg(conn):
         return msg
         
 def create_lobby(conn1, addr1, conn2, addr2):
-    print("Gemu stato")
+    print(f"[NEW LOBBY] {addr1} : {addr2}")
+
+    send("!T1", conn1)
+    send("!T2", conn2)
 
     turno = True
     game = True
+    
     while game:
         if(turno):
             msg = read_msg(conn1)
             if(msg == "!LOSE"):
                 print("Gana el 2")
                 game = False
-                conn1.send("!GG".enconde(FORMAT))
-                conn2.send("!GG".enconde(FORMAT))
+                send("!GG", conn1)
+                send("!GG", conn2)
             else:
-                conn2.send(msg)
+                send(msg, conn2)
             
         else:
             msg = read_msg(conn2)
             if(msg == "!LOSE"):
                 print("Gana el 1")
                 game = False
-                conn1.send("!GG".enconde(FORMAT))
-                conn2.send("!GG".enconde(FORMAT))
+                send("!GG", conn1)
+                send("!GG", conn2)
             else:
-                conn1.send(msg)
+                send(msg, conn1)
 
         turno = not turno
 
