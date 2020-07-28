@@ -4,8 +4,7 @@ import sys
 import json
 
 def PossibleMovements(piece):
-    print(piece)
-    moves = []                                              #Lista para guardar casillas disponibles para visitar
+    moves = []
     if(piece[0][0] == "r"):
         for i in range(piece[1][0]-1, piece[1][0]+2):       
             for j in range(piece[1][1]-1, piece[1][1]+2):
@@ -84,6 +83,11 @@ for i in range(0, 8):
 # movimiento de piezas ----------------------
 dragdrop = True
 pieza_mov = None
+board = [[0]*8 for i in range(8)]
+for i in range(2):
+    for j in range(8):
+        board[0+i][j] = 'n'
+        board[6+i][j] = 'b'
 # -------------------------------------------
 
 run = True
@@ -104,12 +108,16 @@ while run:
                 for i in state:
                     for j in range(0, len(state[i])):
                         if(state[i][j][0] == tabx and state[i][j][1] == taby): 
-                            print(i) 
+                            print(i)
                             pieza_mov = (i, j)
                             mov = PossibleMovements((i, state[i][j]))
                             dragdrop = False
             else:                                
-                if (tabx, taby) in mov: state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
+                if (tabx, taby) in mov:
+                    coor = state[pieza_mov[0]][pieza_mov[1]]
+                    board[taby][tabx] = board[coor[1]][coor[0]]
+                    board[coor[1]][coor[0]] = 0                    
+                    state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
                 dragdrop = True
 
                 sendmsg = json.dumps(state)
