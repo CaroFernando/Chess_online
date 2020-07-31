@@ -38,7 +38,6 @@ def PossibleMovements(piece):
         moves.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
             moves.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
-    #moves = [i for i in moves if isValid(piece, i)]
     return moves
         
 pygame.init()
