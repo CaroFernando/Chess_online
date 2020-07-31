@@ -4,6 +4,10 @@ import sys
 import json
 def isValid(piece, x):
     return x != piece[1] and 0 <= x[0] <= 7 and 0 <= x[1] <= 7
+def linearMovement(a, b, isBlocked, piece, moves, j):
+    if isValid(piece, (piece[1][0] + a, piece[1][1] + b)) and not isBlocked[j]:
+        if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
+        if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True
 def PossibleMovements(piece):
     moves = []
     if(piece[0][0] == "r"):
@@ -11,39 +15,47 @@ def PossibleMovements(piece):
             for j in range(piece[1][1]-1, piece[1][1]+2):
                 if isValid(piece, (i,j)): moves.append((i, j))
     elif(piece[0][0] == "d"):
+        aBlocked, tBlocked = [False] * 4, [False] * 4
         for i in range(8):
-            moves.append((piece[1][0], i))
-            moves.append((i, piece[1][1]))
-            moves.append((piece[1][0]+i, piece[1][1]+i))
-            moves.append((piece[1][0]-i, piece[1][1]-i))
-            moves.append((piece[1][0]+i, piece[1][1]-i))
-            moves.append((piece[1][0]-i, piece[1][1]+i))
+            # moves.append((piece[1][0], i))
+            # moves.append((i, piece[1][1]))
+            # moves.append((piece[1][0]+i, piece[1][1]+i))
+            # moves.append((piece[1][0]-i, piece[1][1]-i))
+            # moves.append((piece[1][0]+i, piece[1][1]-i))
+            # moves.append((piece[1][0]-i, piece[1][1]+i))
+            for j in range(4):
+                linearMovement(-i if j < 2 else i, i if j % 2 else -i, aBlocked, piece, moves, j)
+                linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, tBlocked, piece, moves, j)
     elif(piece[0][0] == "t"):
         isBlocked = [False] * 4
         for i in range(8):
             for j in range(4):
-                a, b = 0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i
-                if isValid(piece, (piece[1][0] + a, piece[1][1] + b)) and not isBlocked[j]:
-                    if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
-                    if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True    
-            # if isValid(piece, (piece[1][0], piece[1][1]+i)) and not isBlocked[0]:
-                # if board[piece[1][1]+i][piece[1][0]] != piece[0][1]: moves.append((piece[1][0], piece[1][1]+i))
-                # if board[piece[1][1]+i][piece[1][0]] != 0: isBlocked[0] = True            
-            # if isValid(piece, (piece[1][0], piece[1][1]-i)) and not isBlocked[1]:
-                # if board[piece[1][1]-i][piece[1][0]] != piece[0][1]: moves.append((piece[1][0], piece[1][1]-i))
-                # if board[piece[1][1]-i][piece[1][0]] != 0: isBlocked[1] = True
-            # if isValid(piece, (piece[1][0]+i, piece[1][1])) and not isBlocked[2]:
-                # if board[piece[1][1]][piece[1][0]+i] != piece[0][1]: moves.append((piece[1][0]+i, piece[1][1]))
-                # if board[piece[1][1]][piece[1][0]+i] != 0: isBlocked[2] = True
-            # if isValid(piece, (piece[1][0]-i, piece[1][1])) and not isBlocked[3]:
-                # if board[piece[1][1]][piece[1][0]-i] != piece[0][1]: moves.append((piece[1][0]-i, piece[1][1]))
-                # if board[piece[1][1]][piece[1][0]-i] != 0: isBlocked[3] = True
+                linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, isBlocked, piece, moves, j)
+                # a, b = 0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i
+                # if isValid(piece, (piece[1][0] + a, piece[1][1] + b)) and not isBlocked[j]:
+                    # if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
+                    # if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True    
+            # # if isValid(piece, (piece[1][0], piece[1][1]+i)) and not isBlocked[0]:
+                # # if board[piece[1][1]+i][piece[1][0]] != piece[0][1]: moves.append((piece[1][0], piece[1][1]+i))
+                # # if board[piece[1][1]+i][piece[1][0]] != 0: isBlocked[0] = True            
+            # # if isValid(piece, (piece[1][0], piece[1][1]-i)) and not isBlocked[1]:
+                # # if board[piece[1][1]-i][piece[1][0]] != piece[0][1]: moves.append((piece[1][0], piece[1][1]-i))
+                # # if board[piece[1][1]-i][piece[1][0]] != 0: isBlocked[1] = True
+            # # if isValid(piece, (piece[1][0]+i, piece[1][1])) and not isBlocked[2]:
+                # # if board[piece[1][1]][piece[1][0]+i] != piece[0][1]: moves.append((piece[1][0]+i, piece[1][1]))
+                # # if board[piece[1][1]][piece[1][0]+i] != 0: isBlocked[2] = True
+            # # if isValid(piece, (piece[1][0]-i, piece[1][1])) and not isBlocked[3]:
+                # # if board[piece[1][1]][piece[1][0]-i] != piece[0][1]: moves.append((piece[1][0]-i, piece[1][1]))
+                # # if board[piece[1][1]][piece[1][0]-i] != 0: isBlocked[3] = True
     elif(piece[0][0] == "a"):     
+        isBlocked = [False] * 4
         for i in range(8):
-            moves.append((piece[1][0]+i, piece[1][1]+i))
-            moves.append((piece[1][0]-i, piece[1][1]-i))
-            moves.append((piece[1][0]+i, piece[1][1]-i))
-            moves.append((piece[1][0]-i, piece[1][1]+i))
+            for j in range(4):
+                linearMovement(-i if j < 2 else i, i if j % 2 else -i, isBlocked, piece, moves, j)
+                # a, b = -i if j < 2 else i, i if j % 2 else -i
+                # if isValid(piece, (piece[1][0] + a, piece[1][1] + b)) and not isBlocked[j]:
+                    # if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b)) 
+                    # if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True   
     elif(piece[0][0] == "c"):
         for i in range(4):
             moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
@@ -128,7 +140,7 @@ while run:
                             print(i)
                             pieza_mov = (i, j)
                             mov = PossibleMovements((i, state[i][j]))
-                            dragdrop = False
+                            if len(mov): dragdrop = False
             else:                                
                 if (tabx, taby) in mov:
                     coor = state[pieza_mov[0]][pieza_mov[1]]
