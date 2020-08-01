@@ -5,9 +5,11 @@ import json
 def isValid(piece, x):
     return x != piece[1] and 0 <= x[0] <= 7 and 0 <= x[1] <= 7
 def linearMovement(a, b, isBlocked, piece, moves, j):
-    if isValid(piece, (piece[1][0] + a, piece[1][1] + b)) and not isBlocked[j]:
-        if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
-        if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True
+    if isValid(piece, (x := piece[1][0] + a, y := piece[1][1] + b)) and not isBlocked[j]:
+        # if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
+        # if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True
+        if board[y][x] != piece[0][1]: moves.append((x, y))
+        if board[y][x] != 0: isBlocked[j] = True
 def PossibleMovements(piece):
     moves = []
     if(piece[0][0] == "r"):
