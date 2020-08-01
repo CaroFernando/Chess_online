@@ -40,13 +40,11 @@ def PossibleMovements(piece):
             x, y, c = piece[1][0] + i - 1, piece[1][1] + (1 if piece[0][1] == "n" else -1), 0 if i == 1 else "b" if piece[0][1] == "n" else "n"
             if isValid(piece, (x, y)) and board[y][x] == c:
                 moves.append((x, y))
-            # if piece[1][1] == 4 if piece[0][1] == "n" else 3 and x == passant:
-                # moves.append((x, y))
+            if piece[1][1] == (4 if piece[0][1] == "n" else 3) and x == passant:
+                moves.append((x, y))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
             uno, dos, x = piece[1][1] + (1 if piece[0][1] == "n" else -1), piece[1][1] + (2 if piece[0][1] == "n" else -2), piece[1][0]
             if not board[uno][x] and not board[uno][x]: moves.append((x, dos))
-            # if board[piece[1][1] + (2 if piece[0][1] == "n" else -2)][piece[1][0]] == 0 and board[y-1][x] == 0:
-                # moves.append((piece[1][0], (piece[1][1] + (2 if piece[0][1] == "n" else -2))))
     return moves
         
 pygame.init()
