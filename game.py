@@ -35,12 +35,13 @@ def PossibleMovements(piece):
             for j in range(2):
                 x, y = piece[1][0] + (1 if i % 2 else -1) * (2 if not j % 2 else 1), piece[1][1] + (1 if i < 2 else -1) * (2 if j % 2 else 1)
                 if isValid(piece, (x, y)) and board[y][x] != piece[0][1]: moves.append((x, y))
-            # moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
-            # moves.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
     elif(piece[0][0] == "p"):   
-        moves.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
+        for i in range(3):
+            if isValid(piece, (x := (piece[1][0] + i - 1), y := piece[1][1] + (1 if piece[0][1] == "n" else -1))) and board[y][x] == (0 if i == 1 else "b" if piece[0][1] == "n" else "n"):
+                moves.append((x, y))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
-            moves.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
+            if board[piece[1][1] + (2 if piece[0][1] == "n" else -2)][piece[1][0]] == 0:
+                moves.append((piece[1][0], (piece[1][1] + (2 if piece[0][1] == "n" else -2))))
     return moves
         
 pygame.init()
