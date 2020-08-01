@@ -6,8 +6,6 @@ def isValid(piece, x):
     return x != piece[1] and 0 <= x[0] <= 7 and 0 <= x[1] <= 7
 def linearMovement(a, b, isBlocked, piece, moves, j):
     if isValid(piece, (x := piece[1][0] + a, y := piece[1][1] + b)) and not isBlocked[j]:
-        # if board[piece[1][1] + b][piece[1][0] + a] != piece[0][1]: moves.append((piece[1][0] + a, piece[1][1] + b))
-        # if board[piece[1][1] + b][piece[1][0] + a] != 0: isBlocked[j] = True
         if board[y][x] != piece[0][1]: moves.append((x, y))
         if board[y][x] != 0: isBlocked[j] = True
 def PossibleMovements(piece):
@@ -96,6 +94,7 @@ for i in range(2):
     for j in range(8):
         board[0+i][j] = 'n'
         board[6+i][j] = 'b'
+turn = "b"
 # -------------------------------------------
 
 run = True
@@ -118,14 +117,17 @@ while run:
                         if(state[i][j][0] == tabx and state[i][j][1] == taby): 
                             print(i)
                             pieza_mov = (i, j)
-                            mov = PossibleMovements((i, state[i][j]))
-                            if len(mov): dragdrop = False
+                            print(turn, i[0])
+                            if turn == i[1]:
+                                mov = PossibleMovements((i, state[i][j]))
+                                if len(mov): dragdrop = False
             else:                                
                 if (tabx, taby) in mov:
                     coor = state[pieza_mov[0]][pieza_mov[1]]
                     board[taby][tabx] = board[coor[1]][coor[0]]
                     board[coor[1]][coor[0]] = 0                    
                     state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
+                    turn = "n" if pieza_mov[0][1] == "b" else "b"
                 dragdrop = True
 
                 sendmsg = json.dumps(state)
@@ -140,7 +142,7 @@ while run:
             win.blit(images[i], (state[i][j][0]*tam + tab_x_off, state[i][j][1]*tam + tab_y_off)) 
     if not dragdrop:
         for i in mov:
-            pygame.draw.circle(win, (200, 0, 0), (tam*i[0] + tam//2 + tab_x_off, tam*i[1] + tam // 2 + tab_y_off), tam//4);
+            pygame.draw.circle(win, (200, 0, 0), (tam*i[0] + tam//2 + tab_x_off, tam*i[1] + tam//2 + tab_y_off), tam//8);
     pygame.display.update()
 
 pygame.quit()
