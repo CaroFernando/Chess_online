@@ -38,11 +38,15 @@ def PossibleMovements(piece):
     elif(piece[0][0] == "p"):   
         for i in range(3):
             x, y, c = piece[1][0] + i - 1, piece[1][1] + (1 if piece[0][1] == "n" else -1), 0 if i == 1 else "b" if piece[0][1] == "n" else "n"
-            if (isValid(piece, (x, y)) and board[y][x] == c):
+            if isValid(piece, (x, y)) and board[y][x] == c:
                 moves.append((x, y))
+            # if piece[1][1] == 4 if piece[0][1] == "n" else 3 and x == passant:
+                # moves.append((x, y))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
-            if board[piece[1][1] + (2 if piece[0][1] == "n" else -2)][piece[1][0]] == 0:
-                moves.append((piece[1][0], (piece[1][1] + (2 if piece[0][1] == "n" else -2))))
+            uno, dos, x = piece[1][1] + (1 if piece[0][1] == "n" else -1), piece[1][1] + (2 if piece[0][1] == "n" else -2), piece[1][0]
+            if not board[uno][x] and not board[uno][x]: moves.append((x, dos))
+            # if board[piece[1][1] + (2 if piece[0][1] == "n" else -2)][piece[1][0]] == 0 and board[y-1][x] == 0:
+                # moves.append((piece[1][0], (piece[1][1] + (2 if piece[0][1] == "n" else -2))))
     return moves
         
 pygame.init()
@@ -124,12 +128,11 @@ while run:
                                 if len(mov): dragdrop = False
             else:                                
                 if (tabx, taby) in mov:
-                    coor = state[pieza_mov[0]][pieza_mov[1]]
-                    # board[taby][tabx] = board[coor[1]][coor[0]]
-                    # board[coor[1]][coor[0]] = 0                    
+                    coor = state[pieza_mov[0]][pieza_mov[1]]           
+                    passant = coor[0] if pieza_mov[0][0] == "p" and abs(coor[1] - taby) == 2 else None
+                    turn = "n" if pieza_mov[0][1] == "b" else "b"
                     board[taby][tabx], board[coor[1]][coor[0]] = board[coor[1]][coor[0]], 0
                     state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
-                    turn = "n" if pieza_mov[0][1] == "b" else "b"
                 dragdrop = True
 
                 sendmsg = json.dumps(state)
