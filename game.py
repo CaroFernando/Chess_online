@@ -38,7 +38,7 @@ def PossibleMovements(piece):
     elif(piece[0][0] == "p"):   
         for i in range(3):
             x, y, c = piece[1][0] + i - 1, piece[1][1] + (1 if piece[0][1] == "n" else -1), 0 if i == 1 else "b" if piece[0][1] == "n" else "n"
-            if isValid(piece, (x, y)) and board[y][x] == c:
+            if (isValid(piece, (x, y)) and board[y][x] == c):
                 moves.append((x, y))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
             if board[piece[1][1] + (2 if piece[0][1] == "n" else -2)][piece[1][0]] == 0:
@@ -89,13 +89,14 @@ for i in range(0, 8):
 
 # movimiento de piezas ----------------------
 dragdrop = True
-pieza_mov = None
+passant = pieza_mov = None
 board = [[0]*8 for i in range(8)]
 for i in range(2):
     for j in range(8):
         board[0+i][j] = 'n'
         board[6+i][j] = 'b'
 turn = "b"
+
 # -------------------------------------------
 
 run = True
@@ -124,8 +125,9 @@ while run:
             else:                                
                 if (tabx, taby) in mov:
                     coor = state[pieza_mov[0]][pieza_mov[1]]
-                    board[taby][tabx] = board[coor[1]][coor[0]]
-                    board[coor[1]][coor[0]] = 0                    
+                    # board[taby][tabx] = board[coor[1]][coor[0]]
+                    # board[coor[1]][coor[0]] = 0                    
+                    board[taby][tabx], board[coor[1]][coor[0]] = board[coor[1]][coor[0]], 0
                     state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
                     turn = "n" if pieza_mov[0][1] == "b" else "b"
                 dragdrop = True
