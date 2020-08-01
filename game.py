@@ -32,8 +32,11 @@ def PossibleMovements(piece):
                 linearMovement(-i if j < 2 else i, i if j % 2 else -i, isBlocked, piece, moves, j) 
     elif(piece[0][0] == "c"):
         for i in range(4):
-            moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
-            moves.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
+            for j in range(2):
+                x, y = piece[1][0] + (1 if i % 2 else -1) * (2 if not j % 2 else 1), piece[1][1] + (1 if i < 2 else -1) * (2 if j % 2 else 1)
+                if isValid(piece, (x, y)) and board[y][x] != piece[0][1]: moves.append((x, y))
+            # moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
+            # moves.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
     elif(piece[0][0] == "p"):   
         moves.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
