@@ -2,41 +2,47 @@ import pygame
 import os
 import sys
 import json
-
+def isValid(piece, x):
+    return x != piece[1] and 0 <= x[0] <= 7 and 0 <= x[1] <= 7
+def linearMovement(a, b, isBlocked, piece, moves, j):
+    if isValid(piece, (x := piece[1][0] + a, y := piece[1][1] + b)) and not isBlocked[j]:
+        if board[y][x] != piece[0][1]: moves.append((x, y))
+        if board[y][x] != 0: isBlocked[j] = True
 def PossibleMovements(piece):
-    print(piece)
-    moves = []                                              #Lista para guardar casillas disponibles para visitar
+    moves = []
     if(piece[0][0] == "r"):
         for i in range(piece[1][0]-1, piece[1][0]+2):       
             for j in range(piece[1][1]-1, piece[1][1]+2):
-                moves.append((i, j))
+                if isValid(piece, (i,j)) and board[j][i] != piece[0][1]: moves.append((i, j))
     elif(piece[0][0] == "d"):
+        aBlocked, tBlocked = [False] * 4, [False] * 4
         for i in range(8):
-            moves.append((piece[1][0], i))
-            moves.append((i, piece[1][1]))
-            moves.append((piece[1][0]+i, piece[1][1]+i))
-            moves.append((piece[1][0]-i, piece[1][1]-i))
-            moves.append((piece[1][0]+i, piece[1][1]-i))
-            moves.append((piece[1][0]-i, piece[1][1]+i))
+            for j in range(4):
+                linearMovement(-i if j < 2 else i, i if j % 2 else -i, aBlocked, piece, moves, j)
+                linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, tBlocked, piece, moves, j)
     elif(piece[0][0] == "t"):
+        isBlocked = [False] * 4
         for i in range(8):
-            moves.append((piece[1][0], i))
-            moves.append((i, piece[1][1]))
-    elif(piece[0][0] == "a"):        
+            for j in range(4):
+                linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, isBlocked, piece, moves, j)
+    elif(piece[0][0] == "a"):     
+        isBlocked = [False] * 4
         for i in range(8):
-            moves.append((piece[1][0]+i, piece[1][1]+i))
-            moves.append((piece[1][0]-i, piece[1][1]-i))
-            moves.append((piece[1][0]+i, piece[1][1]-i))
-            moves.append((piece[1][0]-i, piece[1][1]+i))
+            for j in range(4):
+                linearMovement(-i if j < 2 else i, i if j % 2 else -i, isBlocked, piece, moves, j) 
     elif(piece[0][0] == "c"):
         for i in range(4):
-            moves.append((piece[1][0] + (2 if i % 2 else -2), piece[1][1] + (1 if i < 2 else -1)))
-            moves.append((piece[1][0] + (1 if i % 2 else -1), piece[1][1] + (2 if i < 2 else -2)))
+            for j in range(2):
+                x, y = piece[1][0] + (1 if i % 2 else -1) * (2 if not j % 2 else 1), piece[1][1] + (1 if i < 2 else -1) * (2 if j % 2 else 1)
+                if isValid(piece, (x, y)) and board[y][x] != piece[0][1]: moves.append((x, y))
     elif(piece[0][0] == "p"):   
-        moves.append((piece[1][0], piece[1][1] + (1 if piece[0][1] == "n" else -1)))
+        for i in range(3):
+            x, y, c = piece[1][0] + i - 1, piece[1][1] + (1 if piece[0][1] == "n" else -1), 0 if i == 1 else "b" if piece[0][1] == "n" else "n"
+            if (isValid(piece, (x, y)) and board[y][x] == c) or (piece[1][1] == (4 if piece[0][1] == "n" else 3) and x == passant):
+                moves.append((x, y))
         if (piece[1][1] == 1 and piece[0][1] == "n") or (piece[1][1] == 6):
-            moves.append((piece[1][0], piece[1][1] + (2 if piece[0][1] == "n" else -2)))
-    moves = [i for i in moves if i != piece[1] and 0 <= i[0] <= 7 and 0 <= i[1] <= 7]
+            uno, dos, x = piece[1][1] + (1 if piece[0][1] == "n" else -1), piece[1][1] + (2 if piece[0][1] == "n" else -2), piece[1][0]
+            if not board[uno][x] and not board[uno][x]: moves.append((x, dos))
     return moves
         
 pygame.init()
@@ -83,7 +89,14 @@ for i in range(0, 8):
 
 # movimiento de piezas ----------------------
 dragdrop = True
-pieza_mov = None
+passant = pieza_mov = None
+board = [[0]*8 for i in range(8)]
+for i in range(2):
+    for j in range(8):
+        board[0+i][j] = 'n'
+        board[6+i][j] = 'b'
+turn = "b"
+
 # -------------------------------------------
 
 run = True
@@ -104,12 +117,18 @@ while run:
                 for i in state:
                     for j in range(0, len(state[i])):
                         if(state[i][j][0] == tabx and state[i][j][1] == taby): 
-                            print(i) 
+                            print(i)
                             pieza_mov = (i, j)
-                            mov = PossibleMovements((i, state[i][j]))
-                            dragdrop = False
+                            if turn == i[1]:
+                                mov = PossibleMovements((i, state[i][j]))
+                                if len(mov): dragdrop = False
             else:                                
-                if (tabx, taby) in mov: state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
+                if (tabx, taby) in mov:
+                    coor = state[pieza_mov[0]][pieza_mov[1]]           
+                    passant = coor[0] if pieza_mov[0][0] == "p" and abs(coor[1] - taby) == 2 else None
+                    turn = "n" if pieza_mov[0][1] == "b" else "b"
+                    board[taby][tabx], board[coor[1]][coor[0]] = board[coor[1]][coor[0]], 0
+                    state[pieza_mov[0]][pieza_mov[1]] = (tabx, taby)
                 dragdrop = True
 
                 sendmsg = json.dumps(state)
@@ -124,7 +143,7 @@ while run:
             win.blit(images[i], (state[i][j][0]*tam + tab_x_off, state[i][j][1]*tam + tab_y_off)) 
     if not dragdrop:
         for i in mov:
-            pygame.draw.circle(win, (200, 0, 0), (tam*i[0] + tam//2 + tab_x_off, tam*i[1] + tam // 2 + tab_y_off), tam//4);
+            pygame.draw.circle(win, (200, 0, 0), (tam*i[0] + tam//2 + tab_x_off, tam*i[1] + tam//2 + tab_y_off), tam//8);
     pygame.display.update()
 
 pygame.quit()
