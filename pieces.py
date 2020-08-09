@@ -7,18 +7,20 @@ class Chessman:
         self.state = False
     def availablePos(self):
         pass
-    def isReachable(self,pos):
-        pass
     def moveTo(self,pos):
         pass
+
+class Queen(Chessman):
+    def __init__(self,pos,state,image):
+        super().__init__(pos,state,image)
 
 class Knight(Chessman):
     def __init__(self,pos,state,image):
         super().__init__(pos,state,image)
     def availablePos(self):
         return [1,2,3]
-    def isReachable(self,pos):
-        return(pos[0] == 1 and pos[1] == 2)
+#   def isReachable(self,pos):
+#       return(pos[0] == 1 and pos[1] == 2)
     def moveTo(self,pos):
         #Implementar validacion
         self.pos = pos
