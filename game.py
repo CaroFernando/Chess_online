@@ -10,31 +10,37 @@ def linearMovement(a, b, isBlocked, piece, moves, j):
         if board[y][x] != 0: isBlocked[j] = True
 def PossibleMovements(piece):
     moves = []
+    #rey
     if(piece[0][0] == "r"):
         for i in range(piece[1][0]-1, piece[1][0]+2):       
             for j in range(piece[1][1]-1, piece[1][1]+2):
                 if isValid(piece, (i,j)) and board[j][i] != piece[0][1]: moves.append((i, j))
+    #dama
     elif(piece[0][0] == "d"):
         aBlocked, tBlocked = [False] * 4, [False] * 4
         for i in range(8):
             for j in range(4):
                 linearMovement(-i if j < 2 else i, i if j % 2 else -i, aBlocked, piece, moves, j)
                 linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, tBlocked, piece, moves, j)
+    #torre
     elif(piece[0][0] == "t"):
         isBlocked = [False] * 4
         for i in range(8):
             for j in range(4):
                 linearMovement(0 if j < 2 else i if not j % 2 else -i, 0 if j > 1 else i if not j % 2 else -i, isBlocked, piece, moves, j)
+    #alfil
     elif(piece[0][0] == "a"):     
         isBlocked = [False] * 4
         for i in range(8):
             for j in range(4):
                 linearMovement(-i if j < 2 else i, i if j % 2 else -i, isBlocked, piece, moves, j) 
+    #caballo
     elif(piece[0][0] == "c"):
         for i in range(4):
             for j in range(2):
                 x, y = piece[1][0] + (1 if i % 2 else -1) * (2 if not j % 2 else 1), piece[1][1] + (1 if i < 2 else -1) * (2 if j % 2 else 1)
                 if isValid(piece, (x, y)) and board[y][x] != piece[0][1]: moves.append((x, y))
+    #peon
     elif(piece[0][0] == "p"):   
         for i in range(3):
             x, y, c = piece[1][0] + i - 1, piece[1][1] + (1 if piece[0][1] == "n" else -1), 0 if i == 1 else "b" if piece[0][1] == "n" else "n"
