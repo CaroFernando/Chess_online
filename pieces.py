@@ -1,8 +1,7 @@
 class Chessman:
-    def __init__(self,pos,color,image):
+    def __init__(self,pos,color):
         self.pos = pos
         self.color = color 
-        self.image = image
     def moveTo(self,pos):
         self.pos = pos
 
@@ -15,14 +14,14 @@ class Chessman:
 
     @staticmethod
     def linearMovement(a,b,isBlocked,piece,moves,j,board):
-        if isValid(piece.pos, (x := piece.pos[0] + a, y := piece.pos[1] + b)) and not isBlocked[j]:
+        if Chessman.isValid(piece.pos, (x := piece.pos[0] + a, y := piece.pos[1] + b)) and not isBlocked[j]:
             if board[y][x] != piece.color: moves.append((x, y))
             if board[y][x] != 0: isBlocked[j] = True
 
     
 class Queen(Chessman):
-    def __init__(self,pos,state,image):
-        super().__init__(pos,state,image)
+    def __init__(self,pos,color):
+        super().__init__(pos,color)
 
     def availablePos(self,board):
         moves = []
@@ -34,8 +33,8 @@ class Queen(Chessman):
         return moves
 
 class Bishop(Chessman):
-    def __init__(self,pos,state,image):
-        super().__init__(pos,state,image)
+    def __init__(self,pos,color):
+        super().__init__(pos,color)
 
     def availablePos(self,board):
         moves = []
@@ -46,15 +45,15 @@ class Bishop(Chessman):
         return moves
     
 class Knight(Chessman):
-    def __init__(self,pos,state,image):
-        super().__init__(pos,state,image)
+    def __init__(self,pos,color):
+        super().__init__(pos,color)
 
     def availablePos(self,board):
         moves = []
         for i in range(4):
             for j in range(2):
                 x, y = self.pos[0] + (1 if i % 2 else -1) * (2 if not j % 2 else 1), self.pos[1] + (1 if i < 2 else -1) * (2 if j % 2 else 1)
-                if Chessman.isValid(self.pos, (x, y)) and board[y][x] != piece.color: moves.append((x, y))
+                if Chessman.isValid(self.pos, (x, y)) and board[y][x] != self.color: moves.append((x, y))
         return moves
 
 if(__name__ == '__main__'):
