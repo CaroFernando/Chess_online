@@ -35,7 +35,9 @@ state = {
     "ab":[(2,7),(5,7)],
     "an":[(2,0),(5,0)],
     "cb":[(1,7),(6,7)],
-    "cn":[(1,0),(6,0)]
+    "cn":[(1,0),(6,0)],
+    "tb":[(0,7),(7,7)],
+    "tn":[(0,0),(7,0)]
 }
 
 # movimiento de piezas ----------------------
@@ -75,6 +77,7 @@ while run:
                                 if(i[0]=='d'):obj = Queen(state[i][j],i[1])
                                 if(i[0]=='a'):obj = Bishop(state[i][j],i[1])
                                 if(i[0]=='c'):obj = Knight(state[i][j],i[1])
+                                if(i[0]=='t'):obj = Rook(state[i][j],i[1])
                                 mov = obj.availablePos(board)
                                 print(mov)
                                 if len(mov): 
